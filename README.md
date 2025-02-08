@@ -1,3 +1,6 @@
+### Первая итерация: 8 проектная работа. Архитектура
+### https://github.com/LenaMenson/web-larek-frontend.git
+
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
