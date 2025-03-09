@@ -133,3 +133,7 @@ export function createElement<
     }
     return element;
 }
+
+export function numberToString(value: number): string {
+	return value.toLocaleString('ru-RU'); 
+}
