@@ -1,5 +1,3 @@
-//??? проверить (как в оно тебе надо)
-
 import { Component } from '../base/component';
 import { ensureElement } from '../../utils/utils';
 import { IEvents } from '../base/events';

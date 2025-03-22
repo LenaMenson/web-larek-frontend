@@ -1,21 +1,15 @@
-//??? проверить. (как в оно тебе надо)
-
 import { Component } from '../base/component';
 import { createElement, ensureElement, numberToString } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
 
-interface IBasketState {
+interface IBasketView {
 	items: HTMLElement[];
 	total: number;
+    selected: string[];
 }
-/*
-interface IBasketView {
-    items: HTMLElement[];
-    total: number;
-    // selected: string[];
-}*/
 
-export class Basket extends Component<IBasketState> {
+export class Basket extends Component<IBasketView> {
+    
     protected _itemsList: HTMLElement;
     protected _total: HTMLElement;
     protected _button: HTMLElement;
@@ -34,18 +28,16 @@ export class Basket extends Component<IBasketState> {
             });
         }
 
-        this.items = []; /// ?????????????
+        this.items = [];
     }
 
     set items(items: HTMLElement[]) {
         if (items.length) {
-            this._itemsList.replaceChildren(...items);
-            
+            this._itemsList.replaceChildren(...items);        
         } else {
             this._itemsList.replaceChildren(createElement<HTMLParagraphElement>('p', {
                 textContent: 'Корзина пуста'
             }));
-            
         }
     }
 
@@ -58,6 +50,7 @@ export class Basket extends Component<IBasketState> {
     }
 
     set total(total: number) {
-        this.setText(this._total, numberToString(total)); // формат переделала
+        this.setText(this._total, String(total));
+        console.log('Баскет 54', total)
     }
 }

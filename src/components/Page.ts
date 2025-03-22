@@ -1,4 +1,3 @@
-// проверить. (как в оно тебе надо)
 import {Component} from "./base/component";
 import {IEvents} from "./base/events";
 import {ensureElement} from "../utils/utils";
@@ -23,9 +22,10 @@ export class Page extends Component<IPage> {
         this._gallery = ensureElement<HTMLElement>('.gallery');
         this._wrapper = ensureElement<HTMLElement>('.page__wrapper');
         this._basket = ensureElement<HTMLElement>('.header__basket');
-
+        //открытие корзины по клику на значок
         this._basket.addEventListener('click', () => {
             console.log('открытие корзины по клику на значок EMIT')
+            //установка подписки на событие окрытия корзины
             this.events.emit('basket:open');
         });
     }

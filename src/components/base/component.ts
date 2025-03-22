@@ -1,4 +1,5 @@
-///Готово. (как в оно тебе надо)
+import {IEvents} from "./events";
+
 //Базовый компонент
  
 export abstract class Component<T> {

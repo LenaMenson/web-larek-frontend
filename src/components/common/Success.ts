@@ -1,11 +1,8 @@
-//Вроде исправила. внизу оно т надо. надо в сет тотал возможно исправить
-
 import { Component } from '../base/component';
-import { ensureElement, numberToString } from '../../utils/utils';
-
+import { ensureElement} from '../../utils/utils';
 
 interface ISuccess {
-	total: number;
+	total: string | number;
 }
 
 interface ISuccessActions {
@@ -13,43 +10,21 @@ interface ISuccessActions {
 }
 
 export class Success extends Component<ISuccess> {
-	protected _totalDescription: HTMLElement;
-	protected _closeBtn: HTMLElement;
+	protected _totalSuccess: HTMLElement;
+	protected _closeSuccess: HTMLElement;
 
 	constructor(container: HTMLElement, actions: ISuccessActions) {
 		super(container);
 
-		this._totalDescription = ensureElement<HTMLElement>(
-			'.order-success__description',
-			this.container
-		);
-		this._closeBtn = ensureElement<HTMLElement>(
-			'.order-success__close',
-			this.container
-		);
+		this._totalSuccess = ensureElement<HTMLElement>('.order-success__description', this.container);
+		this._closeSuccess = ensureElement<HTMLElement>('.order-success__close', this.container);
 
-		if (actions.onClick) {
-			this._closeBtn.addEventListener('click', actions.onClick);
+		if (actions?.onClick) {
+			this._closeSuccess.addEventListener('click', actions.onClick);
 		}
 	}
 
-	set total(total: number) {
-		this.setText(this._totalDescription, `Списано ${numberToString(total)} синапсов`);
+	set totalSuccess(total: string | number) {
+		this.setText(this._totalSuccess, `Списано ${total} синапсов`);
 	}
 }
-/*
-
-export class Success extends Component<ISuccess> {
-    protected _close: HTMLElement;
-
-    constructor(container: HTMLElement, actions: ISuccessActions) {
-        super(container);
-
-        this._close = ensureElement<HTMLElement>('.state__action', this.container);
-
-        if (actions?.onClick) {
-            this._close.addEventListener('click', actions.onClick);
-        }
-    }
-}
-    */

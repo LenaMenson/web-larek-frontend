@@ -1,3 +1,4 @@
+//интерфейс товара
 export interface IProductItem {
     id: string;
     description: string;
@@ -7,11 +8,7 @@ export interface IProductItem {
     price: number | null;
   }
   
-  export interface IActions {
-    onClick: (event: MouseEvent) => void;
-  }
-  
-  // интерфейс формы заказа
+  // интерфейсы формы заказа
   export interface IOrderForm {
   payment?: string;
   address?: string;
@@ -24,6 +21,7 @@ export interface IProductItem {
     items: string[];
   }
   
+  // интерфейсы данных заказа
   export interface IOrderLot{
     payment: string;
     email: string;
@@ -38,5 +36,10 @@ export interface IProductItem {
     total: number;
   }
   
+  //интерфейс действий пользователя
+  export interface IActions {
+    onClick: (event: MouseEvent) => void;
+  }
+
   // тип ошибки формы
   export type FormErrors = Partial<Record<keyof IOrder, string>>;
