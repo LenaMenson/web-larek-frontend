@@ -44,14 +44,12 @@ const contacts = new ContactsForm(cloneTemplate<HTMLFormElement>(contactsTemplat
 
 // Изменились элементы каталога
 events.on<CatalogChangeEvent>('catalog:changed', () => {
-	console.log('установка каталога - ON')
 	page.catalog = appData.catalog.map((item: ProductItem) => {
 		//создание экземпляра карточки товара
 		const card = new Card(cloneTemplate(catalogItemTemplate), {
 			//установка подписки на событие выбора карточки товара при клике на нее
 			onClick: () => events.emit('card:select', item)
 		});
-		console.log('выбор карточки - EMIT')
 		
 		return card.render({
 		  image: item.image,
@@ -72,8 +70,6 @@ api.getCardList()
 
   // Открытие превью карточки
 events.on('card:select', (item: ProductItem) => {
-	console.log('выбор карточки - ON')
-	console.log('Индекс Выбранная карточка:', item);///ЕСТЬ
 	appData.setPreview(item);
   });
   
@@ -85,15 +81,13 @@ events.on('preview:change', (item: ProductItem) => {
 			if (!appData.isInBasket(item)) {
 				//установка подписки на событие добавления товара в корзину, если товар еще не в корзине
 				events.emit('cardBasket:add', item);
-				console.log('добавление в корзину - EMIT')
 			} else {
 				//установка подписки на событие удаления товара из корзины, если товар уже в корзине
 				events.emit('cardBasket:delete', item);
-				console.log('удаление из корзины - EMIT')
 			}
 		},
 	});
-	console.log('Индекс 92 preview:change карточка идет в корзину', item);///ЕСТЬ	  
+	  
 	modal.render({ 
 		content: card.render(item) 
 	})
@@ -101,7 +95,6 @@ events.on('preview:change', (item: ProductItem) => {
   
 // Открытие корзины
 events.on('basket:open', () => {
-	console.log ('открытие корзины - ON')
 	  modal.render({
 		  content: myBasket.render()
 	  });
@@ -115,7 +108,7 @@ events.on('basket:changed', () => {
 			//определение элемента помещенного в корзину по id
 			const basketItem = appData.catalog.find(item => item.id === id);
 			//создание экземпляра карточки товара в корзине
-			const BasketCard = new CardInBasket(cloneTemplate(basketItemTemplate), {
+			const basketCard = new CardInBasket(cloneTemplate(basketItemTemplate), {
 				onClick: () => {
 					//добавление функции удаления элемента из корзины
 					appData.deleteFromBasket(basketItem);
@@ -124,7 +117,7 @@ events.on('basket:changed', () => {
 		// нумерация в корзине
 		basketItem.index = index +1;
 	
-		return BasketCard.render({
+		return basketCard.render({
 			title: basketItem.title,
 			price: basketItem.price,
 			index: basketItem.index,
@@ -136,14 +129,12 @@ events.on('basket:changed', () => {
  
  // Добавление товара в корзину
   events.on('cardBasket:add', (item: ProductItem) => {
-	console.log('добавление в корзину - ON')
 	appData.addToBasket(item); 
 	modal.close();
   });
   
   // Удаление товара из корзины
   events.on('cardBasket:delete', (item: ProductItem) => {
-	console.log('удаление из корзины - ON')
 	appData.deleteFromBasket(item);
   }); 
   
@@ -157,7 +148,6 @@ events.on('basket:changed', () => {
 			  errors: [],
 		  }),
 	  });
-	console.log('открытие заказа - ON')
   });
   
   // Слушатель изменений адреса доставки
@@ -172,7 +162,6 @@ events.on('basket:changed', () => {
   
   // Слушатель изменений ошибок валидации формы с адресом и способом оплаты
   events.on('orderFormErrors:change', (errors: FormErrors) => {
-	console.log('изменение ошибок валидации формы1 ON')
 	  const { payment, address } = errors;
 	  order.valid = !payment && !address;
 	  order.errors = Object.values({ payment, address })
@@ -202,7 +191,6 @@ events.on('basket:changed', () => {
   
   // Слушатель изменений ошибок валидации формы с адресом и способом оплаты
   events.on('contactsFormErrors:change', (errors: FormErrors) => {
-	console.log('изменение ошибок валидации формы2 ON')
 	  const { phone, email } = errors;
 	  contacts.valid = !phone && !email;
 	  contacts.errors = Object.values({ phone, email })
@@ -214,16 +202,13 @@ events.on('basket:changed', () => {
   events.on('contacts:submit', () => {
 	//сохранение данных заказа в переменную
 	const orderData = appData.getOrder();
-	console.log(orderData, 'ЗАКАЗ')
 	//отправка заказа на север
 	  api.postOrderLot(orderData)
 		  .then(() => {
 			//открытие модального окна успешно сделанного заказа
 			  const success = new Success(cloneTemplate(successTemplate), {
 					  onClick: () => {
-						  modal.close();
-						  appData.clearBasket();
-						  events.emit('basket:changed');
+						  modal.close();  
 					  },
 				  },	 
 			  );
@@ -231,8 +216,12 @@ events.on('basket:changed', () => {
 				content: success.render() 
 			});
 			  //установка списанной суммы модального окна успешно сделанного заказа
-			  success.totalSuccess = orderData.total;
+			  success.totalSuccess = appData.basketTotal;
 		  })
+		  .then(() => {
+			appData.clearBasket();
+			events.emit('basket:changed');
+		})
 		.catch(err => {
 			console.error(err);
 		});
@@ -240,13 +229,11 @@ events.on('basket:changed', () => {
   
   // Блокируем прокрутку страницы если открыта модалка
   events.on('modal:open', () => {
-	console.log('открытие модалки - ON')
 	page.locked = true;
   });
   
   // ... и разблокируем
   events.on('modal:close', () => {
-	console.log('закрытие модалки - ON')
 	page.locked = false;
   });
 

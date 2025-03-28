@@ -27,13 +27,11 @@ export class Modal extends Component<IModalData> {
 	}
 
 	open() {
-        console.log ('открытие модалки - EMIT')
 		this.container.classList.add('modal_active');
         this.events.emit('modal:open');
 	}
 
 	close() {
-        console.log ('закрытие модалки - EMIT')
 		this.container.classList.remove('modal_active');
         this.content = null;
         this.events.emit('modal:close');

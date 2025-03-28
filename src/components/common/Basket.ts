@@ -23,7 +23,6 @@ export class Basket extends Component<IBasketView> {
 
         if (this._button) {
             this._button.addEventListener('click', () => {
-                console.log ('открытие заказа - EMIT')
                 events.emit('order:open');
             });
         }
@@ -51,6 +50,5 @@ export class Basket extends Component<IBasketView> {
 
     set total(total: number) {
         this.setText(this._total, String(total));
-        console.log('Баскет 54', total)
     }
 }

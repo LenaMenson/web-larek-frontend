@@ -20,7 +20,6 @@ export class OrderForm extends Form<IOrderForm> {
 					});
 					//установка подписки на событие изменения способа оплаты
 					events.emit('payment:changed', button);
-					console.log('изменение способа оплаты - EMIT')
 				});
 			});
 	}
@@ -39,7 +38,6 @@ export class ContactsForm extends Form<IOrderForm> {
     }
 
     set phone(phone: string) {
-		console.log(this.container);
         (this.container.elements.namedItem('phone') as HTMLInputElement).value = phone;
     }
 

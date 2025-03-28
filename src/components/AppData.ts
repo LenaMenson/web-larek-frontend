@@ -1,7 +1,6 @@
 import {Model} from './base/Model';
 import {EventEmitter, IEvents} from "./base/events";
-import { IActions} from "../types";
-import {FormErrors, IOrder, IOrderLot, IProductItem} from '../types/index'; 
+import {FormErrors, IOrderForm, IOrder, IOrderLot, IProductItem} from '../types/index'; 
 
 export class ProductItem extends Model<IProductItem> {
     id: string;
@@ -30,13 +29,11 @@ export class AppState extends Model<IAppState> {
     basketItems: string[] = [];
     basketTotal: number = 0;
     preview: ProductItem | null;
-    order: IOrder = {
+    order: IOrderForm = {
         payment: 'card',
         address: '',
 		phone: '',
         email: '',
-		total: 0,
-		items: []
     };
     formErrors: FormErrors = {};
 
@@ -46,7 +43,6 @@ export class AppState extends Model<IAppState> {
 
 //установка каталога
 setCatalog(items: ProductItem[]) {
-    console.log('установка каталога - EMIT')
     this.catalog = items.map(item => new ProductItem(item, this.events));
     this.events.emit('catalog:changed', { catalog: this.catalog });
 }
@@ -61,7 +57,6 @@ setPreview(item: ProductItem) {
 
 //добавление товаров в корзину
 addToBasket(item: ProductItem): void {
-    console.log('изменение корзины add - EMIT')
     this.basketItems.push(item.id);
     //увеличение суммы корзины на цену добавленного тавара
     this.basketTotal = this.getTotal() + item.price;
@@ -74,7 +69,6 @@ deleteFromBasket(item: ProductItem) {
     //определение индекса удаляемого элемента корзины
     const index = this.basketItems.indexOf(item.id);
     if (index >= 0) {
-        console.log('изменение корзины del  - EMIT')
         this.basketItems.splice(index, 1);
         //уменьшение суммы корзины на цену удаленного тавара
         this.basketTotal = this.getTotal() - item.price;
@@ -114,8 +108,6 @@ private clearOrder(): void {
         address: '',
         phone: '',
         email: '',
-        total: 0,
-        items: []
     };
 }
 
@@ -142,13 +134,11 @@ validateOrder() {
     this.formErrors = errors;
     //установка подписки на изменение ошибок валидации
     this.events.emit('orderFormErrors:change', this.formErrors);
-    console.log('изменение ошибок валидации формы1 EMIT')
     return Object.keys(errors).length === 0;
 }
 
 //установка полей контактов
 public setContactsField(field: keyof IOrder, value: string) {
-    console.log('setContactsField')
     if (field === 'phone') {
         this.order.phone = value;
     } 
@@ -171,7 +161,6 @@ validateContacts() {
     this.formErrors = errors;
     //установка подписки на изменение ошибок валидации
     this.events.emit('contactsFormErrors:change', this.formErrors);
-    console.log('изменение ошибок валидации формы2 EMIT')
     return Object.keys(errors).length === 0;
 }
 
@@ -179,8 +168,8 @@ validateContacts() {
 getOrder(): IOrder {
     return { 
         ...this.order,
-        items: this.basketItems,
-        total: this.getTotal(),
+        items: this.basketItems, 
+        total: this.basketTotal
         }     
     }
 }

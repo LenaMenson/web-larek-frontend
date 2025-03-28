@@ -14,11 +14,11 @@ export interface IProductItem {
   address?: string;
   phone?: string;
   email?: string;
-  total?: string | number;
   }
   
   export interface IOrder extends IOrderForm {
-    items: string[];
+  total?: string | number;
+  items: string[];
   }
   
   // интерфейсы данных заказа
